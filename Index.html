@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ #status {
+    margin: 20px;
+ }
+ #ledStatus {
+    font-size: 24px;
+    font-weight: bold;
+ }
+</style>
+<script>
+ let isConnected = false;
+
+ function connectHC05() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/connectHC05", true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        isConnected = true;
+        updateLedStatus();
+      }
+    }
+    xhr.send();
+ }
+
+ function toggleLed() {
+    if (!isConnected) {
+      return;
+    }
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/toggleLed", true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        updateLedStatus();
+      }
+    }
+    xhr.send();
+ }
+
+ function updateLedStatus() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/getLedStatus", true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        document.getElementById("ledStatus").textContent = xhr.responseText;
+      }
+    }
+    xhr.send();
+ }
+</script>
+</head>
+<body>
+ <button onclick="connectHC05()">Connect</button>
+ <button onclick="toggleLed()">Toggle LED</button>
+ <div id="status">
+    <p>HC-05 Status:</p>
+    <p id="ledStatus"></p>
+ </div>
+</body>
+</html>
